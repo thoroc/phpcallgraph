@@ -1,0 +1,9 @@
+[submodule "lib/ezcomponents/Base"]
+	path = lib/ezcomponents/Base
+	url = https://github.com/zetacomponents/Base.git
+[submodule "lib/ezcomponents/ConsoleTools"]
+	path = lib/ezcomponents/ConsoleTools
+	url = https://github.com/zetacomponents/ConsoleTools.git
+[submodule "lib/ezcomponents/Reflection"]
+	path = lib/ezcomponents/Reflection
+	url = https://github.com/zetacomponents/Reflection.git
