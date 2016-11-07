@@ -181,7 +181,7 @@ class Image_GraphViz
      *
      * @access public
      */
-    function Image_GraphViz($directed = true, $attributes = array(),
+    function __construct($directed = true, $attributes = array(),
                             $name = 'G', $strict = true, $returnError = false)
     {
         $this->setDirected($directed);
@@ -190,6 +190,29 @@ class Image_GraphViz
         $this->graph['strict'] = (boolean)$strict;
 
         $this->_returnFalseOnError = !$returnError;
+    }
+
+    /**
+     * Compatibility constructor.
+     *
+     * @param boolean $directed    Directed (TRUE) or undirected (FALSE) graph.
+     *                             Note: You MUST pass a boolean, and not just
+     *                             an  expression that evaluates to TRUE or
+     *                             FALSE (i.e. NULL, empty string, 0 will NOT
+     *                             work)
+     * @param array   $attributes  Attributes of the graph
+     * @param string  $name        Name of the Graph
+     * @param boolean $strict      Whether to collapse multiple edges between
+     *                             same nodes
+     * @param boolean $returnError Set to TRUE to return PEAR_Error instances
+     *                             on failures instead of FALSE
+     *
+     * @access public
+     */
+    function Image_GraphViz($directed = true, $attributes = array(),
+                            $name = 'G', $strict = true, $returnError = false)
+    {
+        self::__construct($directed, $attributes, $name, $strinct, $returnError);
     }
 
     /**
@@ -1010,11 +1033,11 @@ class Image_GraphViz
             $parsedGraph .= $this->_nodes($nodes, $indent);
         }
 
-        foreach ($this->_getSubgraphs($group) as $_group) {
-            $parsedGraph .= $this->_subgraph($_group, $indent);
-        }
-
         if ($group !== 'default') {
+            foreach ($this->_getSubgraphs($group) as $_group) {
+                $parsedGraph .= $this->_subgraph($_group, $indent);
+            }
+
             $indent = substr($indent, 0, -4);
 
             $parsedGraph .= $indent."}\n";

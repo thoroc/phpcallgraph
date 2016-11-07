@@ -364,7 +364,7 @@ class PHPCallGraph {
 
             // obtain source code
             $memberCode = implode('', array_slice(file($file), $offset, $length));
-            $memberCode = "<?php\nclass $className {\n" . $memberCode . "}\n?>\n";
+            $memberCode = "<"."?php\nclass $className {\n" . $memberCode . "}\n?".">\n";
             //echo $memberCode;
 
             $this->debug("= Analyzing $callerName =");
@@ -483,7 +483,9 @@ class PHPCallGraph {
                                 }
 
                                 $this->info($this->getTokenValues($tokens, $i));
-                                $this->recordVariableAsType($calleeClass, $tokens[$i-6][1]);
+                                if (array_key_exists($i-6, $tokens) && is_array($tokens[$i-6]) && array_key_exists(1, $tokens[$i-6])) {
+                                    $this->recordVariableAsType($calleeClass, $tokens[$i-6][1]);
+                                }
                             } elseif (
                                 (
                                     isset($previousPreviousToken[1]) and $previousPreviousToken[1] == '$this'
@@ -514,7 +516,7 @@ class PHPCallGraph {
                                     $this->debug("Variable = $variable");
                                     $calleeClass = $this->lookupTypeForVariable($variable);
                                     $this->debug('found as ' . $calleeClass);
-                                    if ($calleeClass) {
+                                    if ($calleeClass && array_key_exists($calleeClass, $this->codeSummary['classes'])) {
                                         $calleeParams =  $this->generateParametersForSignature(
                                             $this->codeSummary['classes'][$calleeClass]['methods'][$calleeName]['params']
                                         );
@@ -538,12 +540,12 @@ class PHPCallGraph {
                                                 $this->info($this->getTokenValues($tokens, $i));
 
                                             } else {
-                                                $this-warning("calleeClass is unset");
+                                                $this->warning("calleeClass is unset");
                                                 $calleeParams = null;
                                                 $calleeFile   = null;
                                             }
                                         } else {
-                                            $numEntries = count($this->methodLookupTable[$calleeName]);
+                                            $numEntries = array_key_exists($calleeName, $this->methodLookupTable) ? count($this->methodLookupTable[$calleeName]) : 0;
                                             if ($numEntries == 0) {
                                                 $this->warning("method $calleeName was called, but I have no record for that");
                                             } else {
@@ -706,7 +708,7 @@ class PHPCallGraph {
      * If no match is found returns null.
      */
     protected function lookupTypeForVariable($variable) {
-        $recordedType = $this->variableTypes[$variable];
+        $recordedType = array_key_exists($variable, $this->variableTypes) ? $this->variableTypes[$variable] : null;
         if ($recordedType) {
             $type = $recordedType;
         } else {

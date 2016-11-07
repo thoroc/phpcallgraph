@@ -272,6 +272,11 @@ class iscCodeAnalyzer {
 
         // adapt the php.ini file for the sandbox to the current PHP configuration
         $functionWhiteList = array(
+            'var_dump',
+            'is_null',
+            'htmlspecialchars',
+            'php_sapi_name',
+            'call_user_func_array',
             'set_include_path',
             'class_exists',
             'ob_start',
@@ -329,9 +334,8 @@ class iscCodeAnalyzer {
         $classWhiteList = array(
             'ezcBase',
             'ezcBaseStruct',
-            'ezcReflectionApi',
+            'ezcReflection',
             'ezcReflectionClass',
-            'ezcReflectionClassType',
             'ezcReflectionFunction',
             'ezcReflectionMethod',
             'iscCodeAnalyzer',
@@ -383,19 +387,15 @@ class iscCodeAnalyzer {
             $requiredClasses = array(
                 'ezcReflectionClass',
                 'ezcReflectionType',
-                'ezcReflectionClassType',
-                'ezcReflectionApi',
-                'ezcReflectionDocParser',
-                'ezcReflectionPhpDocParser',
+                'ezcReflectionAbstractType',
+                'ezcReflectionPrimitiveType',
+                'ezcReflectionClass',
+                'ezcReflection',
+                'ezcReflectionDocCommentParser',
                 'ezcReflectionProperty',
-                'ezcReflectionDocTagFactory',
-                'ezcReflectionDocTag',
-                'ezcReflectionDocTagvar',
                 'ezcReflectionTypeMapper',
                 'ezcReflectionTypeFactory',
                 'ezcReflectionTypeFactoryImpl',
-                'ezcReflectionAbstractType',
-                'ezcReflectionPrimitiveType',
                 'ezcReflectionArrayType',
                 'ezcReflectionParameter',
                 'ezcReflectionFunction',
@@ -460,7 +460,6 @@ echo '#-#-#-#-#';
 echo chr(4); // necessary to avoid deadlook
 flush();
 exit();
-?>
 SANDBOXCODE;
             //file_put_contents('sandboxes.php', $phpCommands, FILE_APPEND);
             // for testing use: php -c php.ini.for-code-analyzer-sandbox sandboxes.php
@@ -521,7 +520,7 @@ SANDBOXCODE;
             //echo '$filename = ', var_export($filename, true), ";\n";
             //echo '$result   = ', var_export($result, true), ";\n";
 
-            $arr = split('#-#-#-#-#', $result);
+            $arr = explode('#-#-#-#-#', $result);
 
             if (isset($arr[1])) {
                 $old = error_reporting(0);
@@ -953,15 +952,15 @@ SANDBOXCODE;
      */
     public static function summarizeClassSignature($class) {
         //Collect Class-Tags
-        $tags = $class->getTags();
+        /*$tags = $class->getTags();
         foreach ($tags as $tag) {
             $result['tags'][] = $tag->getName();
-        }
+        }*/
 
         //Collect special class info
         $result['file'] = $class->getFileName();
         $result['LoDB'] = substr_count($class->getDocComment(), "\n");
-        $result['isWebService'] = $class->isTagged('webservice');
+        //$result['isWebService'] = $class->isTagged('webservice');
         $result['isInternal'] = $class->isInternal();
         $result['isAbstract'] = $class->isAbstract();
         $result['isFinal'] = $class->isFinal();
@@ -1005,8 +1004,8 @@ SANDBOXCODE;
         foreach ($props as $property) {
             // echo $class->getFileName(), "\n", $class->getName(), '::', $property->getName(), "\n";
             if (is_object($property->getType())) {
-               $result[$property->getName()]['type'] =
-                                               $property->getType()->toString();
+               $result[$property->getName()]['type'] = (string)
+                                               $property->getType();
                $result[$property->getName()]['docuMissing'] = false;
             }
             else {
@@ -1050,7 +1049,7 @@ SANDBOXCODE;
         $result = array();
         foreach ($params as $param) {
             if (is_object($param->getType())) {
-                $result[$param->getName()]['type'] = $param->getType()->toString();
+                $result[$param->getName()]['type'] = (string) $param->getType();
             }
             else {
                 $result[$param->getName()]['type'] = null;
@@ -1089,10 +1088,10 @@ SANDBOXCODE;
             //echo $class->getFileName(), ' ', $class->getName(), '::', $method->getName(), "\n";
 
             //Collect method tags
-            $tags = $method->getTags();
+            /*$tags = $method->getTags();
             foreach ($tags as $tag) {
                 $result[$method->getName()]['tags'][] = $tag->getName();
-            }
+            }*/
 
             //Collect more infos about this method
             $result[$method->getName()]['isInternal'] = $method->isInternal();
@@ -1124,13 +1123,13 @@ SANDBOXCODE;
             }
 
             if (is_object($method->getReturnType())) {
-               $result[$method->getName()]['return'] = $method->getReturnType()->toString();
+               $result[$method->getName()]['return'] = (string) $method->getReturnType();
             } else {
                $result[$method->getName()]['return'] = null;
             }
-            $result[$method->getName()]['isWebMethod'] = $method->isTagged('webmethod');
-            $result[$method->getName()]['isRestMethod']
-                                              = $method->isTagged('restmethod');
+            //$result[$method->getName()]['isWebMethod'] = $method->isTagged('webmethod');
+            //$result[$method->getName()]['isRestMethod']
+            //                                  = $method->isTagged('restmethod');
 
             $result[$method->getName()]['startLine'] = $method->getStartLine();
             $result[$method->getName()]['endLine'] = $method->getEndLine();
@@ -1161,7 +1160,7 @@ SANDBOXCODE;
     public static function summarizeClasses($classes) {
         $result = array();
         foreach ($classes as $className) {
-            $class = new ezcReflectionClassType($className);
+            $class = new ezcReflectionClass($className);
 
             $result[$className] = self::summarizeClassSignature($class);
             $result[$className]['interfaceCount'] = count($result[$className]['interfaces']);
@@ -1233,12 +1232,12 @@ SANDBOXCODE;
                 $functs[$funcName]['return'] = null;
             }
 
-            $tags = $func->getTags();
+            /*$tags = $func->getTags();
             foreach ($tags as $tag) {
                 if (is_object($tag)) {
                    $functs[$funcName]['tags'][] = $tag->getName();
                 }
-            }
+            }*/
 
             //Collect paramter infos
             $paramFlaws = 0;
