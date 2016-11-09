@@ -273,6 +273,10 @@ class iscCodeAnalyzer {
         // adapt the php.ini file for the sandbox to the current PHP configuration
         $functionWhiteList = array(
             'var_dump',
+            'spl_autoload_register',
+            'spl_autoload_unregister',
+            'spl_autoload_call',
+            'class_alias',
             'is_null',
             'htmlspecialchars',
             'php_sapi_name',
@@ -387,11 +391,16 @@ class iscCodeAnalyzer {
             $requiredClasses = array(
                 'ezcReflectionClass',
                 'ezcReflectionType',
+                'ezcReflectionTypeMapper',
                 'ezcReflectionAbstractType',
                 'ezcReflectionPrimitiveType',
+                'ezcReflectionObjectType',
                 'ezcReflectionClass',
                 'ezcReflection',
                 'ezcReflectionDocCommentParser',
+                'ezcReflectionDocCommentParserImpl',
+                'ezcReflectionAnnotation',
+                'ezcReflectionAnnotationFactory',
                 'ezcReflectionProperty',
                 'ezcReflectionTypeMapper',
                 'ezcReflectionTypeFactory',
@@ -517,8 +526,10 @@ SANDBOXCODE;
                 throw new Exception('The PHP commandline interpreter could not be started. It failed with the message \'Could not startup\'. Try removing extensions like PHP-Gtk from the php.ini used by your PHP CLI.');
             }
 
-            //echo '$filename = ', var_export($filename, true), ";\n";
-            //echo '$result   = ', var_export($result, true), ";\n";
+            if( preg_match( '/(Call Stack:|Fatal error:|Uncaught)/', $result ) ) {
+                echo '$filename = ', var_export($filename, true), ";\n";
+                echo '$result   = ', var_export($result, true), ";\n";
+            }
 
             $arr = explode('#-#-#-#-#', $result);
 
@@ -1227,7 +1238,7 @@ SANDBOXCODE;
             $functs[$funcName]['reqParamCount'] = $func->getNumberOfRequiredParameters();
 
             if (is_object($func->getReturnType())) {
-                $functs[$funcName]['return'] = $func->getReturnType()->toString();
+                $functs[$funcName]['return'] = (string) $func->getReturnType();
             } else {
                 $functs[$funcName]['return'] = null;
             }
