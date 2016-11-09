@@ -19,33 +19,35 @@ Usage
 - In order to generate output formats other that 'txt' or 'cga' the Graphviz toolkit which can be downloaded at http://www.graphviz.org is required.
 - For the 'umlgraph' output format you need pic2plot, which is part of the GNU plotutils package.
 
-> bin/phpcallgraph [-f <string>] [-o <string>] [-r] [-d <string>] [-n] [-p] [-a <string>] [-v] [-g] [-h] [--] <string:sources> [<string:sources> ...]
-> 
-> Arguments:
->     <string:sources>        Files and/or directories to analyze
-> 
-> Options:
->     -f / --format           Set output format. Can be 'txt', 'array', 'umlgraph'
->                             'deadcode', 'cga' or one of the formats supported
->                             by dot, e.g. png, svg, pdf, ps, ...
->                             (see http://graphviz.org/doc/info/output.html)
->     -o / --outputfile       Output file
->     -u / --umloutputdir     UML output directory (only used for the umlgraph output
->                             format
->     -r / --recursive        Analyze directories recursive
->     -d / --dotcommand       Set dot command
->     -i / --ignore           Set a regular expression for files or folders to ignore
->     -n / --noexternalcalls  Do not show calls to methods or functions which are
->                             external to a class
->     -p / --phpfunctions     Show calls to internal PHP functions
->     -a / --autoload         Sets a PHP file with an autoload function which will
->                             be included into the sandbox of the InstantSVC
->                             CodeAnalyzer
->     -v / --verbose          Verbose mode for text output format
->     -g / --debug            Print debug information
->                             (helpful if you get no output at all, since it
->                             shows errors during code analysis)
->     -h / --help             Display help
+```
+bin/phpcallgraph [-f <string>] [-o <string>] [-r] [-d <string>] [-n] [-p] [-a <string>] [-v] [-g] [-h] [--] <string:sources> [<string:sources> ...]
+
+Arguments:
+    <string:sources>        Files and/or directories to analyze
+
+Options:
+    -f / --format           Set output format. Can be 'txt', 'array', 'umlgraph'
+                            'deadcode', 'cga' or one of the formats supported
+                            by dot, e.g. png, svg, pdf, ps, ...
+                            (see http://graphviz.org/doc/info/output.html)
+    -o / --outputfile       Output file
+    -u / --umloutputdir     UML output directory (only used for the umlgraph output
+                            format
+    -r / --recursive        Analyze directories recursive
+    -d / --dotcommand       Set dot command
+    -i / --ignore           Set a regular expression for files or folders to ignore
+    -n / --noexternalcalls  Do not show calls to methods or functions which are
+                            external to a class
+    -p / --phpfunctions     Show calls to internal PHP functions
+    -a / --autoload         Sets a PHP file with an autoload function which will
+                            be included into the sandbox of the InstantSVC
+                            CodeAnalyzer
+    -v / --verbose          Verbose mode for text output format
+    -g / --debug            Print debug information
+                            (helpful if you get no output at all, since it
+                            shows errors during code analysis)
+    -h / --help             Display help
+```
 
 Bugs and improvement
 --------------------
@@ -68,7 +70,9 @@ You can use the CGA framework available at http://cgs.hpi.uni-potsdam.de/trac/cg
 
 In order to generate input file for CGA set the format option to `cga', e.g.
 
-> phpcallgraph -f cga -o testfiles.str test/testfiles/
+```
+phpcallgraph -f cga -o testfiles.str test/testfiles/
+```
 
 ### Analysis of code in the global scope
 
@@ -78,20 +82,24 @@ Code in the global scope (outside any functions or methods) can be analyzed with
 
 You can get a list of methods and functions which are never called by using the output format 'deadcode', e.g.
 
-> bin/phpcallgraph -r -f deadcode test/testfiles/
+```
+bin/phpcallgraph -r -f deadcode test/testfiles/
+```
 
 Examples
 --------
 
-> bin/phpcallgraph -n -f png -o PHPCallGraph.png src/PHPCallGraph.php
-> bin/phpcallgraph -f png -o phpcallgraph-library.png src/drivers/ src/PHPCallGraph.php
-> bin/phpcallgraph -r -f png -o phpcallgraph-src.png src/
-> bin/phpcallgraph -r -f png -o phpcallgraph.png src/ lib/
-> bin/phpcallgraph -r -p test/testfiles/
-> bin/phpcallgraph -p -- test/testfiles/Foo.php test/testfiles/Bar.php
-> bin/phpcallgraph -r -f array test/testfiles/ | php -r '$a = unserialize(file_get_contents("php://stdin")); var_export($a);'
-> bin/phpcallgraph -r -f deadcode test/testfiles/
-> bin/phpcallgraph -g -r -i "PHPCallGraph.php|lib/ezcomponents" -f png -o phpcallgraph-src1.png src/ lib/
+```
+bin/phpcallgraph -n -f png -o PHPCallGraph.png src/PHPCallGraph.php
+bin/phpcallgraph -f png -o phpcallgraph-library.png src/drivers/ src/PHPCallGraph.php
+bin/phpcallgraph -r -f png -o phpcallgraph-src.png src/
+bin/phpcallgraph -r -f png -o phpcallgraph.png src/ lib/
+bin/phpcallgraph -r -p test/testfiles/
+bin/phpcallgraph -p -- test/testfiles/Foo.php test/testfiles/Bar.php
+bin/phpcallgraph -r -f array test/testfiles/ | php -r '$a = unserialize(file_get_contents("php://stdin")); var_export($a);'
+bin/phpcallgraph -r -f deadcode test/testfiles/
+bin/phpcallgraph -g -r -i "PHPCallGraph.php|lib/ezcomponents" -f png -o phpcallgraph-src1.png src/ lib/
+```
 
 Authors
 -------
