@@ -34,10 +34,10 @@ set_include_path(
     . realpath(dirname(__FILE__) . '/../lib/ezcomponents') . PATH_SEPARATOR
     // other external libraries, e.g. Static Reflection
     . realpath(dirname(__FILE__) . '/../lib') . PATH_SEPARATOR
+    // PEAR files shipped with phpCallGraph
+    . realpath(dirname(__FILE__) . '/../lib/pear') . PATH_SEPARATOR
     // original include path from php.ini
-    . get_include_path() . PATH_SEPARATOR
-    // PEAR files shipped with phpCallGraph (only used if no PEAR installed)
-    . realpath(dirname(__FILE__) . '/../lib/pear')
+    . get_include_path()
 );
 
 // configure eZ Components autoloader
