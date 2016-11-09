@@ -27,7 +27,7 @@
  */
 
 // reduce warnings because of PEAR dependency
-error_reporting(E_ALL ^ E_NOTICE);
+#error_reporting(E_ALL ^ E_NOTICE);
 
 require_once 'CallgraphDriver.php';
 require_once 'Image/GraphViz.php';
@@ -74,6 +74,8 @@ class GraphVizDriver implements CallgraphDriver {
                 'fontname'  => 'Verdana',
                 'fontsize'  => 12.0,
                 //'fontcolor' => 'gray5',
+                'ranksep' => 3.5,
+                'nodesep' => .35,
                 'rankdir' => 'LR', // left-to-right
             )
         );
