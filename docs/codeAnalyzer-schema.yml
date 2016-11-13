@@ -1,0 +1,340 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+name: "Configuration of MediaWikiFarm extension to manage MediaWiki farms."
+type: "object"
+additionalProperties: false
+properties:
+    classes:
+        type: "object"
+        description: "Description of classes."
+        additionalProperties: false
+        patternProperties:
+            ^[a-zA-Z0-9_-]+$:
+                type: "object"
+                description: "Description of the class."
+                additionalProperties: false
+                required: ["file", "LoDB", "isInternal", "isAbstract", "isFinal", "isInterface", "startLine", "endLine", "LoC", "interfaces", "DIT", "parentClass", "modifiers", "interfaceCount", "properties", "propertyCount", "methods", "methodCount"]
+                properties:
+                    file:
+                        type: "string"
+                        description: "File path."
+                    LoDB:
+                        type: "number"
+                        description: "Number of lines of the documentation block."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    isInternal:
+                        type: "boolean"
+                        description: "The class is defined by core or an extension."
+                    isAbstract:
+                        type: "boolean"
+                        description: "The class is abstract."
+                    isFinal:
+                        type: "boolean"
+                        description: "The class if final."
+                    isInterface:
+                        type: "boolean"
+                        description: "The class is an interface."
+                    startLine:
+                        type: "number"
+                        description: "First line of the class definition."
+                        pattern: "^[1-9][0-9]*$"
+                    endLine:
+                        type: "number"
+                        description: "Last line of the class definition."
+                        pattern: "^[1-9][0-9]*$"
+                    LoC:
+                        type: "number"
+                        description: "Number of lines of code for the class definition."
+                        pattern: "^[1-9][0-9]*$"
+                    interfaces:
+                        type: "array"
+                        description: "List of the interfaces implemented by the class."
+                        items:
+                            type: "string"
+                            description: "One of the interface implemented by the class."
+                    DIT:
+                        type: "number"
+                        description: "Depth of the parent class hierarchy."
+                        pattern: "^[1-9][0-9]*$"
+                    parentClass:
+                        type: "string"
+                        description: "Immediate parent class name of the class."
+                    modifiers:
+                        type: "number"
+                        description: "Bitmask of the class modifiers (final = 4; implicitely abstract = 16; explicitely abstract = 32)."
+                        enum: [0, 4, 16, 20, 32]
+                    interfaceCount:
+                        type: "number"
+                        description: "Number of interfaces implemented by the class."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    properties:
+                        type: "object"
+                        description: "Class properties."
+                        additionalProperties: false
+                        patternProperties:
+                            ^[a-zA-Z0-9_-]+$:
+                                type: "object"
+                                description: "Description of the property."
+                                additionalProperties: false
+                                required: ["type", "docuMissing", "LoDB", "modifiers", "isDefault", "isPrivate", "isPublic", "isProtected", "visibility", "isStatic"]
+                                properties:
+                                    type:
+                                        type: ["string", "null"]
+                                        description: "Type of the property."
+                                    docuMissing:
+                                        type: "boolean"
+                                        description: "There is no type hint in the documentation block."
+                                    LoDB:
+                                        type: "number"
+                                        description: "Number of lines of the documentation block."
+                                        pattern: "^([1-9][0-9]*|0)$"
+                                    modifiers:
+                                        type: "number"
+                                        description: "Bitmask of the property modifiers [missing doc on the PHP website]."
+                                    isDefault:
+                                        type: "boolean"
+                                        description: "The property was defined at compile-time."
+                                    isPrivate:
+                                        type: "boolean"
+                                        description: "The property has private visibility."
+                                    isPublic:
+                                        type: "boolean"
+                                        description: "The property has public visibility."
+                                    isProtected:
+                                        type: "boolean"
+                                        description: "The property has protected visibility."
+                                    visibility:
+                                        type: "string"
+                                        description: "Visibility of the property."
+                                        enum: ["private", "public", "protected"]
+                                    isStatic:
+                                        type: "boolean"
+                                        description: "The property is static."
+                    propertyCount:
+                        type: "number"
+                        description: "Number of class properties."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    methods:
+                        type: "object"
+                        description: "Class methods."
+                        additionalProperties: false
+                        patternProperties:
+                            ^[a-zA-Z0-9_-]+$:
+                                type: "object"
+                                description: "Description of the method."
+                                additionalProperties: false
+                                required: ["isInternal", "isAbstract", "isFinal", "isPublic", "isPrivate", "isProtected", "isStatic", "modifiers", "isConstructor", "isDestructor", "isOverridden", "isInherited", "isIntroduced", "visibility", "LoDB", "return", "startLine", "endLine", "Loc", "paramCount", "reqParamCount", "param", "paramflaws"]
+                                properties:
+                                    isInternal:
+                                        type: "boolean"
+                                        description: "The method is defined by core or an extension."
+                                    isAbstract:
+                                        type: "boolean"
+                                        description: "The method is abstract."
+                                    isFinal:
+                                        type: "boolean"
+                                        description: "The method is final."
+                                    isPublic:
+                                        type: "boolean"
+                                        description: "The method has public visibility."
+                                    isPrivate:
+                                        type: "boolean"
+                                        description: "The method has private visibility."
+                                    isProtected:
+                                        type: "boolean"
+                                        description: "The method has protected visibility."
+                                    isStatic:
+                                        type: "boolean"
+                                        description: "The method is static."
+                                    modifiers:
+                                        type: "number"
+                                        description: "Bitmask of the method modifiers."
+                                    isConstructor:
+                                        type: "boolean"
+                                        description: "The method is the class constructor."
+                                    isDestructor:
+                                        type: "boolean"
+                                        description: "The method is the class destructor."
+                                    isOverridden:
+                                        type: "boolean"
+                                        description: "The method overrides the method from the parent class."
+                                    isInherited:
+                                        type: "boolean"
+                                        description: "The method is inherited from the parent class."
+                                    isIntroduced:
+                                        type: "boolean"
+                                        description: "The method was first introduced in this class, it is not present in its parent class."
+                                    visibility:
+                                        type: "string"
+                                        description: "Visibility of the method."
+                                        enum: ["public", "protected", "private"]
+                                    LoDB:
+                                        type: "number"
+                                        description: "Number of lines of the documentation block."
+                                        pattern: "^([1-9][0-9]*|0)$"
+                                    return:
+                                        type: ["string", "null"]
+                                        description: "Return type hint from the documentation block."
+                                    startLine:
+                                        type: "number"
+                                        description: "First line of the method definition."
+                                        pattern: "^[1-9][0-9]*$"
+                                    endLine:
+                                        type: "number"
+                                        description: "Last line of the method definition."
+                                        pattern: "^[1-9][0-9]*$"
+                                    LoC:
+                                        type: "number"
+                                        description: "Number of lines of code for the method definition."
+                                        pattern: "^([1-9][0-9]*|0)$"
+                                    paramCount:
+                                        type: "number"
+                                        description: "Number of parameters of the method."
+                                        pattern: "^([1-9][0-9]*|0)$"
+                                    reqParamCount:
+                                        type: "number"
+                                        description: "Number of required parameters of the method."
+                                        pattern: "^([1-9][0-9]*|0)$"
+                                    params:
+                                        type: "object"
+                                        description: "Parameters of the method."
+                                        additionalProperties: false
+                                        patternProperties:
+                                            ^[a-zA-Z0-9_-]+$:
+                                                type: "object"
+                                                description: "Description of the parameter of the method."
+                                                additionalProperties: false
+                                                required: ["type", "isOptional", "byReference"]
+                                                properties:
+                                                     type:
+                                                        type: ["string", "null"]
+                                                        description: "Type or type hint of the parameter."
+                                                     isOptional:
+                                                        type: "boolean"
+                                                        description: "The parameter is optional."
+                                                     byReference:
+                                                        type: "boolean"
+                                                        description: "The parameter is passed by reference."
+                                                     hasDefault:
+                                                        type: "boolean"
+                                                        description: "The parameter has a default value."
+                                                     defaultValue:
+                                                        description: "Default value of the parameter."
+                                    paramflaws:
+                                        type: "number"
+                                        description: "Number of parameters without type or type hint."
+                                        pattern: "^([1-9][0-9]*|0)$"
+                    methodCount:
+                        type: "number"
+                        description: "Number of class methods."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    nonePrivateMethods:
+                        type: "number"
+                        description: "Number of non-private methods."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    isOverridden:
+                        type: "number"
+                        description: "Number of overridden methods."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    isInherited:
+                        type: "number"
+                        description: "Number of inherited methods."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    missingMethodComments:
+                        type: "number"
+                        description: "Number of methods without documentation block."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    missingParamTypes:
+                        type: "number"
+                        description: "Number of parameters without type or type hint over the whole class."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    children:
+                        type: "array"
+                        description: "Child classes."
+                        additionalItems: false
+                        items:
+                            type: "string"
+                            description: "A child class name."
+                    childrenCount:
+                        type: "number"
+                        description: "Number of child classes."
+    functions:
+        type: "object"
+        description: "Description of functions."
+        additionalProperties: false
+        patternProperties:
+            ^[a-zA-Z0-9_-]+$:
+                type: object
+                description: "Description of a function."
+                additionalProperties: false
+                required: ["comment", "file", "LoDB", "startLine", "endLine", "Loc", "paramCount", "reqParamCount", "return", "params", "paramflaws"]
+                properties:
+                    comment:
+                        type: "boolean"
+                        description: "There is a comment with more than 10 lines."
+                    file:
+                        type: "string"
+                        description: "File path."
+                    LoDB:
+                        type: "number"
+                        description: "Number of lines of the documentation block."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    startLine:
+                        type: "number"
+                        description: "First line of the class definition."
+                        pattern: "^[1-9][0-9]*$"
+                    endLine:
+                        type: "number"
+                        description: "Last line of the class definition."
+                        pattern: "^[1-9][0-9]*$"
+                    LoC:
+                        type: "number"
+                        description: "Number of lines of code for the class definition."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    paramCount:
+                        type: "number"
+                        description: "Number of parameters of the method."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    reqParamCount:
+                        type: "number"
+                        description: "Number of required parameters of the method."
+                        pattern: "^([1-9][0-9]*|0)$"
+                    return:
+                        type: ["string", "null"]
+                        description: "Return type hint from the documentation block."
+                    params:
+                        type: "array"
+                        description: "Parameters of the function."
+                        additionalProperties: false
+                        patternProperties:
+                            ^[a-zA-Z0-9_-]+$:
+                                type: "object"
+                                description: "Description of the parameter of the method."
+                                additionalProperties: false
+                                required: ["type", "isOptional", "byReference"]
+                                properties:
+                                    type:
+                                        type: ["string", "null"]
+                                        description: "Type or type hint of the parameter."
+                                    isOptional:
+                                        type: "boolean"
+                                        description: "The parameter is optional."
+                                    byReference:
+                                        type: "boolean"
+                                        description: "The parameter is passed by reference."
+                                    hasDefault:
+                                        type: "boolean"
+                                        description: "The parameter has a default value."
+                                    defaultValue:
+                                        description: "Default value of the parameter."
+                    paramflaws:
+                        type: "number"
+                        description: "Number of parameters without type or type hint."
+                        pattern: "^([1-9][0-9]*|0)$"
+    interfaces:
+        type: "object"
+        description: "Description of interfaces."
+        additionalProperties: false
+        patternProperties:
+            ^[a-zA-Z0-9_-]+$:
+                type: object
+                description: "Description of an interface. Same as classes."

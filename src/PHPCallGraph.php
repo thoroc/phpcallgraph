@@ -36,7 +36,7 @@ require_once 'drivers/TextDriver.php';
  */
 class PHPCallGraph {
 
-    const VERSION = '0.8.0';
+    const VERSION = '0.9.0-alpha';
 
     /**
      * @var string[]
@@ -222,6 +222,14 @@ class PHPCallGraph {
         return $files;
     }
 
+	/**
+	 * Parse files or directories.
+	 *
+	 * @param string[] $filesOrDirs Path of files and/or directories.
+	 * @param bool $recursive Recursively walk into subdirectories.
+	 * @param string[] $ignore Regular expression to ignore files or directories.
+	 * @return void
+	 */
     public function parse(array $filesOrDirs, $recursive = false, $ignore="") {
         $files = $this->collectFileNames($filesOrDirs, $recursive, $ignore);
         if ($this->debug) {
@@ -236,6 +244,12 @@ class PHPCallGraph {
         $this->analyseCodeSummary();
     }
 
+    /**
+	 * Parse a file.
+	 *
+	 * @param string $file File path.
+	 * @return void
+	 */
     public function parseFile($file) {
         $ca = new iscCodeAnalyzer(null);
         $ca->setDebug($this->debug);
@@ -245,6 +259,12 @@ class PHPCallGraph {
         $this->analyseCodeSummary();
     }
 
+    /**
+	 * Parse a directory.
+	 *
+	 * @param string $dir Directory path.
+	 * @return void
+	 */
     public function parseDir($dir = '.') {
         $ca = new iscCodeAnalyzer($dir);
         $ca->setDebug($this->debug);
@@ -719,4 +739,3 @@ class PHPCallGraph {
         return $type;
     }
 }
-?>

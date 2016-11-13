@@ -978,7 +978,7 @@ SANDBOXCODE;
         $result['isInterface'] = $class->isInterface();
         $result['startLine'] = $class->getStartLine();
         $result['endLine'] = $class->getEndLine();
-        $result['LoC'] = $class->getEndLine() - $class->getStartLine();
+        $result['LoC'] = $class->getEndLine() - $class->getStartLine() + 1;
 
         $result['interfaces'] = array();
         $interfaces = $class->getInterfaces();
@@ -1144,7 +1144,7 @@ SANDBOXCODE;
 
             $result[$method->getName()]['startLine'] = $method->getStartLine();
             $result[$method->getName()]['endLine'] = $method->getEndLine();
-            $result[$method->getName()]['LoC'] = $method->getEndLine() - $method->getStartLine();
+            $result[$method->getName()]['LoC'] = $method->getEndLine() - $method->getStartLine() + 1;
 
             $result[$method->getName()]['paramCount'] = $method->getNumberOfParameters();
             $result[$method->getName()]['reqParamCount'] = $method->getNumberOfRequiredParameters();
