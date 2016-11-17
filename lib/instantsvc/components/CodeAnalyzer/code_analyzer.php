@@ -336,12 +336,6 @@ class iscCodeAnalyzer {
         );
 
         $classWhiteList = array(
-            'ezcBase',
-            'ezcBaseStruct',
-            'ezcReflection',
-            'ezcReflectionClass',
-            'ezcReflectionFunction',
-            'ezcReflectionMethod',
             'iscCodeAnalyzer',
             'Exception',
             'ReflectionException',
@@ -352,6 +346,7 @@ class iscCodeAnalyzer {
             'ReflectionMethod',
             'ReflectionClass',
             'ReflectionProperty',
+            'ReflectionType',
         );
 
         $functions = get_defined_functions();
@@ -389,31 +384,11 @@ class iscCodeAnalyzer {
         if (is_resource($process)) {
             // generate include statements for the sandbox
             $requiredClasses = array(
-                'ezcReflectionClass',
-                'ezcReflectionType',
-                'ezcReflectionTypeMapper',
-                'ezcReflectionAbstractType',
-                'ezcReflectionPrimitiveType',
-                'ezcReflectionObjectType',
-                'ezcReflectionClass',
-                'ezcReflection',
-                'ezcReflectionDocCommentParser',
-                'ezcReflectionDocCommentParserImpl',
-                'ezcReflectionAnnotation',
-                'ezcReflectionAnnotationFactory',
-                'ezcReflectionProperty',
-                'ezcReflectionTypeMapper',
-                'ezcReflectionTypeFactory',
-                'ezcReflectionTypeFactoryImpl',
-                'ezcReflectionArrayType',
-                'ezcReflectionParameter',
-                'ezcReflectionFunction',
-                'ezcReflectionMethod',
                 'iscCodeAnalyzer',
             );
             $includes = '';
             foreach ($requiredClasses as $requiredClassName) {
-                $requiredClass = new ezcReflectionClass($requiredClassName);
+                $requiredClass = new ReflectionClass($requiredClassName);
                 if ($requiredClass->isUserDefined()) {
                     //echo $requiredClassName, "\n";
                     $requiredFile = addslashes($requiredClass->getFileName());
@@ -439,32 +414,12 @@ set_include_path("$include_path");
 // these explicit includes allow scanning files which define an own __autoload function
 $includes
 
-// the ezc autoloader is only needed when analyzing eZ Components based applications, e.g. InstantSVC or phpCallGraph
-if (!function_exists('__autoload')) {
-    // try to find an SVN, Release or PEAR version of base.php
-    foreach (array('Base/src/base.php', 'Base/base.php', 'ezc/Base/base.php') as \$ezcBaseFileToInclude) {
-        if (!in_array('ezcBase', get_declared_classes())) {
-            @include_once \$ezcBaseFileToInclude;
-        } else {
-            break;
-        }
-    }
-    // remove the global variable used in the foreach loop
-    unset(\$ezcBaseFileToInclude);
-
-    // define an __autoload function which is automatically called in case a class
-    // is used which hasn't been declared
-    function __autoload( \$className ) {
-        //file_put_contents("autoload.log", "'\$className',\\n", FILE_APPEND);
-        ezcBase::autoload( \$className );
-    }
-}
-
 ob_start();
-\$iscCodeAnalyzerOutput = serialize(iscCodeAnalyzer::summarizeFile("$fileToInspect"));
+\$iscCodeAnalyzerOutput = iscCodeAnalyzer::summarizeFile("$fileToInspect");
+\$iscCodeAnalyzerOutputSerialized = serialize( \$iscCodeAnalyzerOutput );
 ob_end_clean();
 echo '#-#-#-#-#';
-echo \$iscCodeAnalyzerOutput;
+echo \$iscCodeAnalyzerOutputSerialized;
 echo '#-#-#-#-#';
 echo chr(4); // necessary to avoid deadlook
 flush();
@@ -676,6 +631,7 @@ SANDBOXCODE;
      * @return int
      */
     protected  static function countInheritedMethods($classes) {
+        return 0;
         $i = 0;
         foreach ($classes as $class) {
             foreach ($class['methods'] as $method) {
@@ -694,6 +650,7 @@ SANDBOXCODE;
      * @return int
      */
     protected static function countOverriddenMethods($classes) {
+        return 0;
         $overridden = 0;
         foreach ($classes as $class) {
             foreach ($class['methods'] as $method) {
@@ -715,6 +672,7 @@ SANDBOXCODE;
      * @return int
      */
     public static function countPossibleOverriddes($classes) {
+        return 0;
         $pos = 0;
         foreach ($classes as $className => $class) {
             $new = 0;
@@ -1014,7 +972,7 @@ SANDBOXCODE;
         $result = array();
         foreach ($props as $property) {
             // echo $class->getFileName(), "\n", $class->getName(), '::', $property->getName(), "\n";
-            if (is_object($property->getType())) {
+            if (0&&is_object($property->getType())) {
                $result[$property->getName()]['type'] = (string)
                                                $property->getType();
                $result[$property->getName()]['docuMissing'] = false;
@@ -1115,9 +1073,9 @@ SANDBOXCODE;
             $result[$method->getName()]['modifiers'] = $method->getModifiers();
             $result[$method->getName()]['isConstructor'] = $method->isConstructor();
             $result[$method->getName()]['isDestructor'] = $method->isDestructor();
-            $result[$method->getName()]['isOverridden'] = $method->isOverridden();
-            $result[$method->getName()]['isInherited'] = $method->isInherited();
-            $result[$method->getName()]['isIntroduced'] = $method->isIntroduced();
+            //$result[$method->getName()]['isOverridden'] = $method->isOverridden();
+            //$result[$method->getName()]['isInherited'] = $method->isInherited();
+            //$result[$method->getName()]['isIntroduced'] = $method->isIntroduced();
 
             if ($method->isPublic())
             { $result[$method->getName()]['visibility'] = 'public'; }
@@ -1171,7 +1129,7 @@ SANDBOXCODE;
     public static function summarizeClasses($classes) {
         $result = array();
         foreach ($classes as $className) {
-            $class = new ezcReflectionClass($className);
+            $class = new ReflectionClass($className);
 
             $result[$className] = self::summarizeClassSignature($class);
             $result[$className]['interfaceCount'] = count($result[$className]['interfaces']);
@@ -1226,7 +1184,7 @@ SANDBOXCODE;
     public static function summarizeFunctions($functions) {
         $functs = array();
         foreach ($functions as $funcName) {
-            $func = new ezcReflectionFunction($funcName);
+            $func = new ReflectionFunction($funcName);
             $functs[$funcName]['comment']       = (strlen($func->getDocComment()) > 10);
             $functs[$funcName]['file']          = $func->getFileName();
             $functs[$funcName]['LoDB']          = substr_count($func->getDocComment(), "\n");
