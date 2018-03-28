@@ -1,0 +1,26 @@
+{
+    "name": "thoroc/phpcallgraph",
+    "description": "A Call Graph Generator for PHP",
+    "type": "project",
+    "license": "GNU General Public License v3.0",
+    "authors": [
+        { "name": "Falko Menge", "email": "fakko@users.sourceforge.net" },
+        { "name": "Till Klampaeckel", "email": "till@php.net" },
+        { "name": "Christian Weiske", "email": "cweiske@php.net" },
+        { "name": "Martin Cleaver", "email": "mrjc@users.sourceforge.net" },
+        { "name": "Sébastien Beyou", "email": "seb35@seb35.fr" },
+        { "name": "Thomas Roche", "email": "thomas.a.roche@gmail.com" }
+    ],
+    "require": {
+        "zetacomponents/base": "^1.9",
+        "zetacomponents/console-tools": "^1.7",
+        "zetacomponents/reflection": "dev-master",
+        "php": "^7.1"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": " 0.9.0-dev"
+        }
+    }
+}
